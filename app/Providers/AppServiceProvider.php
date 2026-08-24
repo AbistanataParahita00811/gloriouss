@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Repositories\SupplierRepository;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 // Repositories & Interfaces
@@ -37,6 +38,8 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        //
+        if (env('VERCEL') || env('APP_ENV') === 'production') {
+            URL::forceScheme('https');
+        }
     }
 }
