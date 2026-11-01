@@ -17,11 +17,8 @@ class DashboardsController extends Controller
     {
         // Ambil 6 produk terbaru untuk dashboard - hitung stok dari StockTransaction
         $productsQuery = Product::with(['category', 'supplier', 'reviews'])
-            ->addSelect([
-                'current_stock' => StockTransaction::selectRaw("COALESCE(SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END), 0)")
-                    ->whereColumn('product_id', 'products.id')
-            ])
-            ->having('current_stock', '>', 0) // Hanya produk dengan stok > 0
+            ->withTransactionStock()
+            ->whereTransactionStock('>', 0)
             ->latest()
             ->take(6);
 

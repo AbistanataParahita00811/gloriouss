@@ -22,10 +22,7 @@ class ProductsController extends Controller
         $productsQuery = Product::with(['category', 'supplier', 'reviews']);
 
         // Hitung stok saat ini menggunakan subquery - sama dengan AdminDashboardController
-        $productsQuery->addSelect([
-            'current_stock' => StockTransaction::selectRaw("COALESCE(SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END), 0)")
-                ->whereColumn('product_id', 'products.id')
-        ]);
+        $productsQuery->withTransactionStock();
 
         // Filter by category
         if ($request->has('category_id') && $request->category_id) {
@@ -45,7 +42,7 @@ class ProductsController extends Controller
 
         // Filter hanya produk dengan stok > 0
         if ($request->has('in_stock') && $request->in_stock) {
-            $productsQuery->having('current_stock', '>', 0);
+            $productsQuery->whereTransactionStock('>', 0);
         }
 
         // Filter produk diskon
@@ -184,11 +181,7 @@ class ProductsController extends Controller
     {
         // Query untuk produk terbaru dengan stok > 0 - FIXED QUERY
         $latestProducts = Product::with(['category'])
-            ->whereHas('stockTransactions', function($query) {
-                $query->selectRaw("product_id, COALESCE(SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END), 0) as stock")
-                      ->groupBy('product_id')
-                      ->havingRaw('stock > 0');
-            })
+            ->whereTransactionStock('>', 0)
             ->latest()
             ->take(6)
             ->get();
@@ -205,11 +198,7 @@ class ProductsController extends Controller
             ->where('is_on_sale', true)
             ->where('discount_price', '>', 0)
             ->whereColumn('discount_price', '<', 'original_price')
-            ->whereHas('stockTransactions', function($query) {
-                $query->selectRaw("product_id, COALESCE(SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END), 0) as stock")
-                      ->groupBy('product_id')
-                      ->havingRaw('stock > 0');
-            })
+            ->whereTransactionStock('>', 0)
             ->latest()
             ->take(6)
             ->get();
@@ -251,11 +240,7 @@ class ProductsController extends Controller
                       ->orWhere('description', 'ilike', "%{$search}%")
                       ->orWhere('specification', 'ilike', "%{$search}%");
             })
-            ->whereHas('stockTransactions', function($query) {
-                $query->selectRaw("product_id, COALESCE(SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END), 0) as stock")
-                      ->groupBy('product_id')
-                      ->havingRaw('stock > 0');
-            })
+            ->whereTransactionStock('>', 0)
             ->paginate(12);
 
         // Hitung stok untuk setiap produk
@@ -275,11 +260,7 @@ class ProductsController extends Controller
     {
         $products = Product::with(['category'])
             ->where('category_id', $category->id)
-            ->whereHas('stockTransactions', function($query) {
-                $query->selectRaw("product_id, COALESCE(SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END), 0) as stock")
-                      ->groupBy('product_id')
-                      ->havingRaw('stock > 0');
-            })
+            ->whereTransactionStock('>', 0)
             ->paginate(12);
 
         // Hitung stok untuk setiap produk
@@ -301,11 +282,7 @@ class ProductsController extends Controller
             ->where('is_on_sale', true)
             ->where('discount_price', '>', 0)
             ->whereColumn('discount_price', '<', 'original_price')
-            ->whereHas('stockTransactions', function($query) {
-                $query->selectRaw("product_id, COALESCE(SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END), 0) as stock")
-                      ->groupBy('product_id')
-                      ->havingRaw('stock > 0');
-            })
+            ->whereTransactionStock('>', 0)
             ->paginate(12);
 
         // Hitung stok untuk setiap produk
@@ -324,11 +301,7 @@ class ProductsController extends Controller
     public function outOfStock()
     {
         $products = Product::with(['category'])
-            ->whereHas('stockTransactions', function($query) {
-                $query->selectRaw("product_id, COALESCE(SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END), 0) as stock")
-                      ->groupBy('product_id')
-                      ->havingRaw('stock <= 0');
-            })
+            ->whereTransactionStock('<=', 0)
             ->paginate(12);
 
         // Hitung stok untuk setiap produk
@@ -347,11 +320,8 @@ class ProductsController extends Controller
     public function withStock()
     {
         $products = Product::with(['category'])
-            ->select('products.*')
-            ->addSelect(DB::raw("COALESCE(SUM(CASE WHEN stock_transactions.type = 'Masuk' THEN stock_transactions.quantity ELSE -stock_transactions.quantity END), 0) as current_stock"))
-            ->leftJoin('stock_transactions', 'products.id', '=', 'stock_transactions.product_id')
-            ->groupBy('products.id')
-            ->having('current_stock', '>', 0)
+            ->withTransactionStock()
+            ->whereTransactionStock('>', 0)
             ->paginate(12);
 
         return view('main.products.with-stock', compact('products'));

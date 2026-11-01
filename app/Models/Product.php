@@ -213,6 +213,27 @@ class Product extends Model
         );
     }
 
+    public static function transactionStockSql(): string
+    {
+        return "COALESCE(SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END), 0)";
+    }
+
+    public function scopeWithTransactionStock($query)
+    {
+        return $query->addSelect([
+            'current_stock' => StockTransaction::selectRaw(self::transactionStockSql())
+                ->whereColumn('product_id', 'products.id'),
+        ]);
+    }
+
+    public function scopeWhereTransactionStock($query, string $operator = '>', int $value = 0)
+    {
+        return $query->whereRaw(
+            '(SELECT '.self::transactionStockSql().' FROM stock_transactions WHERE product_id = products.id) '.$operator.' ?',
+            [$value]
+        );
+    }
+
     // Scopes
     public function scopeInStock($query)
     {
