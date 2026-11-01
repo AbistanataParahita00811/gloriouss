@@ -414,12 +414,7 @@
 
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
             @php
-                $featuredProducts = \App\Models\Product::with(['category', 'reviews'])
-                    ->where('is_active', true)
-                    ->where('current_stock', '>', 0)
-                    ->orderBy('created_at', 'desc')
-                    ->take(6)
-                    ->get();
+                $featuredProducts = isset($products) ? $products : collect();
             @endphp
 
             @forelse($featuredProducts as $product)

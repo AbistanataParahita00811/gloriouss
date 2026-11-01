@@ -59,6 +59,8 @@ class Product extends Model
         'current_stock' => 'integer',
         'min_stock' => 'integer',
         'max_stock' => 'integer',
+        'is_active' => 'boolean',
+        'is_on_sale' => 'boolean',
     ];
 
     // Relationships
@@ -228,6 +230,8 @@ class Product extends Model
 
     public function scopeWhereTransactionStock($query, string $operator = '>', int $value = 0)
     {
+        $operator = in_array($operator, ['>', '>=', '<', '<=', '=', '!='], true) ? $operator : '>';
+
         return $query->whereRaw(
             '(SELECT '.self::transactionStockSql().' FROM stock_transactions WHERE product_id = products.id) '.$operator.' ?',
             [$value]

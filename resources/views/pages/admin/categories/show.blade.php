@@ -89,7 +89,7 @@
                             <div class="flex justify-between text-sm mb-1">
                                 <span class="text-gray-500 dark:text-gray-400">Produk Aktif</span>
                                 <span class="font-medium text-gray-900 dark:text-white">
-                                    {{ $activeProductsCount ?? $category->products()->where('is_active', true)->count() }}
+                                    {{ $activeProductsCount ?? $category->products()->whereRaw('is_active = true')->count() }}
                                 </span>
                             </div>
                             <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">

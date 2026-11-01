@@ -19,6 +19,7 @@ class DashboardsController extends Controller
         $productsQuery = Product::with(['category', 'supplier', 'reviews'])
             ->withTransactionStock()
             ->whereTransactionStock('>', 0)
+            ->where('is_active', true)
             ->latest()
             ->take(6);
 
