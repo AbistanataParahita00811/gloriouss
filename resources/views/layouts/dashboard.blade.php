@@ -83,7 +83,7 @@
                         <div class="flex items-center">
                             <div class="flex-shrink-0">
                                 <img class="h-11 w-11 rounded-full object-cover ring-2 ring-blue-400" 
-                                     src="{{ Auth::user()->profile_photo_path ? asset('storage/' . Auth::user()->profile_photo_path) : 'https://ui-avatars.com/api/?name='.urlencode(Auth::user()->name).'&background=3b82f6&color=fff' }}" 
+                                     src="{{ Auth::user()->profile_photo_path ? storage_public_url(Auth::user()->profile_photo_path) : 'https://ui-avatars.com/api/?name='.urlencode(Auth::user()->name).'&background=3b82f6&color=fff' }}" 
                                      alt="{{ Auth::user()->name }}">
                             </div>
                             <div class="ml-4">

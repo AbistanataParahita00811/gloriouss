@@ -207,7 +207,7 @@
                                     <div class="flex items-center">
                                         <div class="flex-shrink-0 h-10 w-10">
                                             @if($review->user && $review->user->profile_photo_path)
-                                                <img class="h-10 w-10 rounded-full object-cover" src="{{ asset('storage/' . $review->user->profile_photo_path) }}" alt="{{ $review->user->name }}">
+                                                <img class="h-10 w-10 rounded-full object-cover" src="{{ storage_public_url($review->user->profile_photo_path) }}" alt="{{ $review->user->name }}">
                                             @else
                                                 <div class="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
                                                     <i class="fas fa-user text-gray-600"></i>

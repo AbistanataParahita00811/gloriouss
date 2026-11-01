@@ -2,6 +2,15 @@
 
 use Illuminate\Support\Str;
 
+/*
+| Laravel PDO only understands postgres:// and postgresql:// URLs.
+| prisma+postgres:// (prisma init / Accelerate / prisma dev) is not a PDO driver.
+*/
+$databaseUrl = env('DATABASE_URL');
+if (! is_string($databaseUrl) || ! preg_match('/^(postgres|postgresql):\/\//i', $databaseUrl)) {
+    $databaseUrl = null;
+}
+
 return [
 
     /*
@@ -15,7 +24,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'mysql'),
+    'default' => env('DB_CONNECTION', 'pgsql'),
 
     /*
     |--------------------------------------------------------------------------
@@ -37,7 +46,7 @@ return [
 
         'sqlite' => [
             'driver' => 'sqlite',
-            'url' => env('DATABASE_URL'),
+            'url' => env('DB_URL'),
             'database' => env('DB_DATABASE', database_path('database.sqlite')),
             'prefix' => '',
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
@@ -45,7 +54,7 @@ return [
 
        'mysql' => [
     'driver' => 'mysql',
-    'url' => env('DATABASE_URL'),
+    'url' => $databaseUrl,
     'host' => env('DB_HOST', '127.0.0.1'),
     'port' => env('DB_PORT', '3306'),
     'database' => env('DB_DATABASE', 'forge'),
@@ -65,7 +74,7 @@ return [
 
         'pgsql' => [
             'driver' => 'pgsql',
-            'url' => env('DATABASE_URL'),
+            'url' => $databaseUrl,
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '5432'),
             'database' => env('DB_DATABASE', 'forge'),
@@ -75,12 +84,16 @@ return [
             'prefix' => '',
             'prefix_indexes' => true,
             'search_path' => 'public',
-            'sslmode' => 'prefer',
+            'sslmode' => env('DB_SSLMODE', 'require'),
+            'options' => [
+                // Transaction pooler (PgBouncer) tidak mendukung prepared statements native.
+                PDO::ATTR_EMULATE_PREPARES => true,
+            ],
         ],
 
         'sqlsrv' => [
             'driver' => 'sqlsrv',
-            'url' => env('DATABASE_URL'),
+            'url' => $databaseUrl,
             'host' => env('DB_HOST', 'localhost'),
             'port' => env('DB_PORT', '1433'),
             'database' => env('DB_DATABASE', 'forge'),

@@ -8,8 +8,14 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (Schema::hasTable('orders')) {
-            // Perluas ENUM agar mendukung semua status baru:
+        if (! Schema::hasTable('orders')) {
+            return;
+        }
+
+        $driver = Schema::getConnection()->getDriverName();
+
+        // MySQL: perluas ENUM. PostgreSQL memakai string, tidak perlu ALTER.
+        if ($driver === 'mysql') {
             DB::statement("
                 ALTER TABLE `orders`
                 MODIFY `status` ENUM(
@@ -26,8 +32,13 @@ return new class extends Migration
 
     public function down(): void
     {
-        if (Schema::hasTable('orders')) {
-            // Kembalikan ke enum awal jika perlu rollback
+        if (! Schema::hasTable('orders')) {
+            return;
+        }
+
+        $driver = Schema::getConnection()->getDriverName();
+
+        if ($driver === 'mysql') {
             DB::statement("
                 ALTER TABLE `orders`
                 MODIFY `status` ENUM(

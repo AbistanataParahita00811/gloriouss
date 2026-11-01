@@ -465,7 +465,7 @@
                             <div class="mb-4">
                                 <div class="relative group">
                                     <img id="imagePreview" class="object-cover w-full h-48 transition-all border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-600 group-hover:border-blue-400"
-                                         src="{{ $product->image ? asset('storage/' . $product->image) : 'https://via.placeholder.com/300x200?text=No+Image' }}"
+                                         src="{{ $product->image ? storage_public_url($product->image) : 'https://via.placeholder.com/300x200?text=No+Image' }}"
                                          alt="Preview gambar">
                                     <button type="button" id="removeImageBtn" class="absolute p-2 text-white transition-colors bg-red-500 rounded-full shadow-lg -top-2 -right-2 hover:bg-red-600"
                                             style="{{ !$product->image ? 'display: none;' : '' }}">

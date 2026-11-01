@@ -19,7 +19,7 @@ $products = Product::with(['stockTransactions'])->take(3)->get();
 foreach ($products as $product) {
     // Calculate current stock from transactions
     $calculatedStock = $product->stockTransactions()
-        ->selectRaw('COALESCE(SUM(CASE WHEN type = "Masuk" THEN quantity ELSE -quantity END), 0) as stock')
+        ->selectRaw("COALESCE(SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END), 0) as stock")
         ->value('stock') ?? 0;
 
     echo "Product: {$product->name}\n";
@@ -32,7 +32,7 @@ foreach ($products as $product) {
 // Test 2: Check total stock calculation
 echo "2. Testing Total Stock Calculation:\n";
 $totalStockFromField = Product::sum('current_stock');
-$totalStockFromTransactions = StockTransaction::selectRaw('COALESCE(SUM(CASE WHEN type = "Masuk" THEN quantity ELSE -quantity END), 0) as total_stock')
+$totalStockFromTransactions = StockTransaction::selectRaw("COALESCE(SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END), 0) as total_stock")
     ->value('total_stock') ?? 0;
 
 echo "Total Stock from current_stock field: {$totalStockFromField}\n";
@@ -47,7 +47,7 @@ if ($testProduct) {
 
     // Get stock before transaction
     $stockBefore = $testProduct->stockTransactions()
-        ->selectRaw('COALESCE(SUM(CASE WHEN type = "Masuk" THEN quantity ELSE -quantity END), 0) as stock')
+        ->selectRaw("COALESCE(SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END), 0) as stock")
         ->value('stock') ?? 0;
 
     echo "Stock before transaction: {$stockBefore}\n";
@@ -64,7 +64,7 @@ if ($testProduct) {
 
     // Get stock after transaction
     $stockAfter = $testProduct->stockTransactions()
-        ->selectRaw('COALESCE(SUM(CASE WHEN type = "Masuk" THEN quantity ELSE -quantity END), 0) as stock')
+        ->selectRaw("COALESCE(SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END), 0) as stock")
         ->value('stock') ?? 0;
 
     echo "Stock after adding 5 items: {$stockAfter}\n";

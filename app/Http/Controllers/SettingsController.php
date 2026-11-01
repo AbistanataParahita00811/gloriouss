@@ -39,6 +39,20 @@ class SettingsController extends Controller
         }
 
         try {
+            if (env('VERCEL')) {
+                $uploadedPath = null;
+                if ($request->hasFile('app_logo')) {
+                    $uploadedPath = $this->handleLogoUpload($request->file('app_logo'));
+                }
+
+                $message = 'Di Vercel file .env tidak bisa ditulis. Set APP_NAME di Vercel Environment Variables.';
+                if ($uploadedPath) {
+                    $message .= ' Logo terunggah. Set APP_LOGO='.$uploadedPath.' di Vercel lalu Redeploy.';
+                }
+
+                return redirect()->route('admin.settings')->with('error', $message);
+            }
+
             // 2. Update Nama Aplikasi di .env
             $this->updateEnv('APP_NAME', $request->app_name);
             Log::info('APP_NAME berhasil diupdate di file .env');
@@ -71,10 +85,10 @@ class SettingsController extends Controller
     {
         // Gunakan env() untuk mendapatkan nilai mentah dari file .env
         $logoPath = env('APP_LOGO');
-        if ($logoPath && Storage::disk('public')->exists($logoPath)) {
-            return asset('storage/' . $logoPath);
+        if ($logoPath) {
+            return storage_public_url($logoPath);
         }
-        return null; // Return null jika tidak ada logo
+        return null;
     }
 
     /**

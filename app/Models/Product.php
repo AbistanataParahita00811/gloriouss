@@ -254,7 +254,7 @@ class Product extends Model
     public function updateStockFromTransactions()
     {
         $this->current_stock = $this->stockTransactions()
-            ->selectRaw('SUM(CASE WHEN type = "Masuk" THEN quantity ELSE -quantity END) as stock')
+            ->selectRaw("SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END) as stock")
             ->value('stock') ?? 0;
 
         $this->save();

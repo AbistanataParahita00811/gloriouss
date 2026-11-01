@@ -69,8 +69,8 @@
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Gambar Ulasan</label>
             <div class="flex flex-wrap gap-2">
                 @foreach($review->images as $imgPath)
-                    <a href="{{ asset('storage/' . $imgPath) }}" target="_blank" class="block">
-                        <img src="{{ asset('storage/' . $imgPath) }}" 
+                    <a href="{{ storage_public_url($imgPath) }}" target="_blank" class="block">
+                        <img src="{{ storage_public_url($imgPath) }}" 
                              alt="Ulasan" 
                              class="w-24 h-24 object-cover rounded-lg border border-gray-300 dark:border-gray-600 hover:opacity-90 transition-opacity">
                     </a>

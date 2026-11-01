@@ -425,8 +425,8 @@
             @forelse($featuredProducts as $product)
             <div class="group hover-lift bg-dark-800 rounded-2xl overflow-hidden border border-dark-500 transition-all duration-300">
                 <div class="relative h-56 bg-dark-900 overflow-hidden">
-                    @if($product->image && \Illuminate\Support\Facades\Storage::disk('public')->exists($product->image))
-                        <img src="{{ asset('storage/' . $product->image) }}"
+                    @if($product->image)
+                        <img src="{{ storage_public_url($product->image) }}"
                              alt="{{ $product->name }}"
                              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                     @else
@@ -647,7 +647,7 @@
                         {{-- User Avatar --}}
                         <div class="flex-shrink-0">
                             @if($review->user && $review->user->profile_photo_path)
-                                <img src="{{ asset('storage/' . $review->user->profile_photo_path) }}" 
+                                <img src="{{ storage_public_url($review->user->profile_photo_path) }}" 
                                      alt="{{ $review->user->name }}"
                                      class="w-12 h-12 rounded-full object-cover border-2 border-primary-500/30">
                             @else

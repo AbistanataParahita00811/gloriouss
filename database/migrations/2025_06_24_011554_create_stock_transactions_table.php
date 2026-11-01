@@ -13,10 +13,10 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('supplier_id')->nullable()->constrained()->onDelete('set null');
-            $table->enum('type', ['Masuk', 'Keluar']);
+            $table->string('type', 16);
             $table->integer('quantity');
             $table->dateTime('date');
-            $table->enum('status', ['Pending', 'Diterima', 'Ditolak', 'Dikeluarkan']);
+            $table->string('status', 24);
             $table->foreignId('processed_by')->nullable()->constrained('users')->onDelete('set null');
             $table->text('notes')->nullable();
             $table->timestamps();

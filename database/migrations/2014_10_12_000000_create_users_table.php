@@ -20,7 +20,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('profile_photo_path', 2048)->nullable();
-            $table->enum('role', ['Admin', 'Staff Gudang', 'Manajer Gudang', 'Customer'])->default('Customer');
+            $table->string('role', 32)->default('Customer');
             $table->rememberToken();
             $table->timestamps();
         });

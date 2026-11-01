@@ -99,7 +99,7 @@
             <div class="overflow-hidden bg-white rounded-lg shadow-md dark:bg-slate-800">
                 <div class="p-6">
                     @if($product->image)
-                        <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="object-cover w-full rounded-md">
+                        <img src="{{ storage_public_url($product->image) }}" alt="{{ $product->name }}" class="object-cover w-full rounded-md">
                     @else
                         <div class="flex items-center justify-center w-full h-48 bg-gray-100 rounded-md dark:bg-slate-700">
                             <i class="text-4xl text-gray-400 fas fa-image dark:text-slate-500"></i>

@@ -17,11 +17,7 @@
     $imagePath = $product->image ?? null;
     $imageUrl = null;
     if ($imagePath) {
-        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($imagePath)) {
-            $imageUrl = asset('storage/' . $imagePath);
-        } elseif (str_starts_with($imagePath, 'http')) {
-            $imageUrl = $imagePath;
-        }
+        $imageUrl = storage_public_url($imagePath);
     }
     // Rating data
     $avgRating = $product->average_rating ?? 0;

@@ -5,7 +5,10 @@
     "builds": [
         {
             "src": "api/index.php",
-            "use": "vercel-php@0.7.4"
+            "use": "vercel-php@0.7.4",
+            "config": {
+                "php.ini": "api/php.ini"
+            }
         },
         {
             "src": "public/**",
@@ -40,11 +43,16 @@
         "APP_SERVICES_CACHE": "/tmp/services.php",
         "VIEW_COMPILED_PATH": "/tmp/views",
         "SSR_TEMP_PATH": "/tmp/ssr",
+        "APP_STORAGE_PATH": "/tmp/storage",
         "CACHE_DRIVER": "array",
         "LOG_CHANNEL": "stderr",
         "SESSION_DRIVER": "cookie",
+        "SESSION_SECURE_COOKIE": "true",
         "QUEUE_CONNECTION": "sync",
-        "FILESYSTEM_DISK": "local",
+        "FILESYSTEM_DISK": "s3",
+        "FILESYSTEM_PUBLIC_DRIVER": "s3",
+        "AWS_DEFAULT_REGION": "eu-north-1",
+        "AWS_USE_PATH_STYLE_ENDPOINT": "true",
         "NODE_PATH": "node"
     }
 }

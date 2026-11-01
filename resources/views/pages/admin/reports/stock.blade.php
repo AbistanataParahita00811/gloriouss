@@ -94,7 +94,7 @@
                         <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white">
                             <div class="flex items-center">
                                 @if($product->image)
-                                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="w-8 h-8 rounded-md object-cover mr-3">
+                                    <img src="{{ storage_public_url($product->image) }}" alt="{{ $product->name }}" class="w-8 h-8 rounded-md object-cover mr-3">
                                 @endif
                                 <div>
                                     <div class="font-medium">{{ $product->name }}</div>

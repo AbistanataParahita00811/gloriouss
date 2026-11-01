@@ -30,9 +30,9 @@ class AdminReviewController extends Controller
         if ($request->has('search') && $request->search) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
-                $q->where('comment', 'like', "%{$search}%")
+                $q->where('comment', 'ilike', "%{$search}%")
                   ->orWhereHas('user', function($userQuery) use ($search) {
-                      $userQuery->where('name', 'like', "%{$search}%");
+                      $userQuery->where('name', 'ilike', "%{$search}%");
                   });
             });
         }

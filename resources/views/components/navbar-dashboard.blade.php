@@ -161,7 +161,7 @@
                 <div x-data="{ open: false }" class="relative">
                     <button @click="open = !open" class="flex items-center space-x-2 text-gray-700 dark:text-gray-300">
                         <img class="w-9 h-9 rounded-full object-cover" 
-                        src="{{ Auth::user()->profile_photo_path ? asset('storage/' . Auth::user()->profile_photo_path) : 'https://ui-avatars.com/api/?name='.urlencode(Auth::user()->name).'&background=3b82f6&color=fff' }}" 
+                        src="{{ Auth::user()->profile_photo_path ? storage_public_url(Auth::user()->profile_photo_path) : 'https://ui-avatars.com/api/?name='.urlencode(Auth::user()->name).'&background=3b82f6&color=fff' }}" 
                         alt="{{ Auth::user()->name }}">
                         <i class="fas fa-chevron-down text-xs transform" :class="{'rotate-180': open}"></i>
                     </button>

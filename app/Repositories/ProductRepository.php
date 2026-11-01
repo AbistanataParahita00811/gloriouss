@@ -43,7 +43,7 @@ class ProductRepository implements ProductRepositoryInterface
         $query = Product::query();
         
         if (isset($filters['search'])) {
-            $query->where('name', 'like', '%' . $filters['search'] . '%');
+            $query->where('name', 'ilike', '%' . $filters['search'] . '%');
         }
         
         // Tambahkan filter lain sesuai kebutuhan

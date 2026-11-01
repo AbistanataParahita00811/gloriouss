@@ -1012,8 +1012,8 @@
                             id="profile-popup-button"
                             class="relative w-10 h-10 rounded-full overflow-hidden bg-dark-700 hover:ring-2 hover:ring-primary-500 transition-all group focus:outline-none">
                         @auth
-                            @if(auth()->user()->profile_photo_path && \Illuminate\Support\Facades\Storage::disk('public')->exists(auth()->user()->profile_photo_path))
-                                <img src="{{ asset('storage/' . auth()->user()->profile_photo_path) }}" 
+                            @if(auth()->user()->profile_photo_path)
+                                <img src="{{ storage_public_url(auth()->user()->profile_photo_path) }}" 
                                      alt="Profile" 
                                      class="w-full h-full object-cover">
                             @else
@@ -1207,8 +1207,7 @@
                                     $price = $cartItem->product->final_price ?? $cartItem->product->selling_price ?? 0;
                                     $sub = $price * $cartItem->quantity;
                                     $sidebarTotal += $sub;
-                                    $imgUrl = $cartItem->product->image && \Illuminate\Support\Facades\Storage::disk('public')->exists($cartItem->product->image)
-                                        ? asset('storage/' . $cartItem->product->image) : null;
+                                    $imgUrl = $cartItem->product->image ? storage_public_url($cartItem->product->image) : null;
                                 @endphp
                                 <div class="cart-item flex gap-3 p-3 rounded-lg bg-dark-700/50 border border-gray-700">
                                     @if($imgUrl)

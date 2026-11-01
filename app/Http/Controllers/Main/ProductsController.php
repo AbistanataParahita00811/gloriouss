@@ -23,7 +23,7 @@ class ProductsController extends Controller
 
         // Hitung stok saat ini menggunakan subquery - sama dengan AdminDashboardController
         $productsQuery->addSelect([
-            'current_stock' => StockTransaction::selectRaw('COALESCE(SUM(CASE WHEN type = "Masuk" THEN quantity ELSE -quantity END), 0)')
+            'current_stock' => StockTransaction::selectRaw("COALESCE(SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END), 0)")
                 ->whereColumn('product_id', 'products.id')
         ]);
 
@@ -36,10 +36,10 @@ class ProductsController extends Controller
         if ($request->has('search') && $request->search) {
             $search = $request->search;
             $productsQuery->where(function($query) use ($search) {
-                $query->where('name', 'like', "%{$search}%")
-                      ->orWhere('sku', 'like', "%{$search}%")
-                      ->orWhere('description', 'like', "%{$search}%")
-                      ->orWhere('specification', 'like', "%{$search}%");
+                $query->where('name', 'ilike', "%{$search}%")
+                      ->orWhere('sku', 'ilike', "%{$search}%")
+                      ->orWhere('description', 'ilike', "%{$search}%")
+                      ->orWhere('specification', 'ilike', "%{$search}%");
             });
         }
 
@@ -116,7 +116,7 @@ class ProductsController extends Controller
         $totalCategories = Category::count();
 
         // Hitung total stok yang tersedia menggunakan subquery yang sama
-        $availableStock = StockTransaction::selectRaw('COALESCE(SUM(CASE WHEN type = "Masuk" THEN quantity ELSE -quantity END), 0) as total_stock')
+        $availableStock = StockTransaction::selectRaw("COALESCE(SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END), 0) as total_stock")
             ->value('total_stock') ?? 0;
 
         return view('main.products.index', compact(
@@ -138,7 +138,7 @@ class ProductsController extends Controller
 
         // Hitung stok saat ini dari StockTransaction - cara yang sama dengan index
         $currentStock = StockTransaction::where('product_id', $product->id)
-            ->selectRaw('COALESCE(SUM(CASE WHEN type = "Masuk" THEN quantity ELSE -quantity END), 0) as stock')
+            ->selectRaw("COALESCE(SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END), 0) as stock")
             ->value('stock') ?? 0;
 
         // Update current_stock attribute
@@ -153,7 +153,7 @@ class ProductsController extends Controller
                 $query->select('product_id')
                       ->from('stock_transactions')
                       ->groupBy('product_id')
-                      ->havingRaw('COALESCE(SUM(CASE WHEN type = "Masuk" THEN quantity ELSE -quantity END), 0) > 0');
+                      ->havingRaw("COALESCE(SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END), 0) > 0");
             })
             ->limit(4)
             ->pluck('id');
@@ -185,7 +185,7 @@ class ProductsController extends Controller
         // Query untuk produk terbaru dengan stok > 0 - FIXED QUERY
         $latestProducts = Product::with(['category'])
             ->whereHas('stockTransactions', function($query) {
-                $query->selectRaw('product_id, COALESCE(SUM(CASE WHEN type = "Masuk" THEN quantity ELSE -quantity END), 0) as stock')
+                $query->selectRaw("product_id, COALESCE(SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END), 0) as stock")
                       ->groupBy('product_id')
                       ->havingRaw('stock > 0');
             })
@@ -196,7 +196,7 @@ class ProductsController extends Controller
         // Hitung stok untuk setiap produk
         foreach ($latestProducts as $product) {
             $product->current_stock = StockTransaction::where('product_id', $product->id)
-                ->selectRaw('COALESCE(SUM(CASE WHEN type = "Masuk" THEN quantity ELSE -quantity END), 0) as stock')
+                ->selectRaw("COALESCE(SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END), 0) as stock")
                 ->value('stock') ?? 0;
         }
 
@@ -206,7 +206,7 @@ class ProductsController extends Controller
             ->where('discount_price', '>', 0)
             ->whereColumn('discount_price', '<', 'original_price')
             ->whereHas('stockTransactions', function($query) {
-                $query->selectRaw('product_id, COALESCE(SUM(CASE WHEN type = "Masuk" THEN quantity ELSE -quantity END), 0) as stock')
+                $query->selectRaw("product_id, COALESCE(SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END), 0) as stock")
                       ->groupBy('product_id')
                       ->havingRaw('stock > 0');
             })
@@ -217,7 +217,7 @@ class ProductsController extends Controller
         // Hitung stok untuk setiap produk diskon
         foreach ($saleProducts as $product) {
             $product->current_stock = StockTransaction::where('product_id', $product->id)
-                ->selectRaw('COALESCE(SUM(CASE WHEN type = "Masuk" THEN quantity ELSE -quantity END), 0) as stock')
+                ->selectRaw("COALESCE(SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END), 0) as stock")
                 ->value('stock') ?? 0;
         }
 
@@ -225,7 +225,7 @@ class ProductsController extends Controller
         $totalCategories = Category::count();
         
         // Hitung total stok yang tersedia
-        $availableStock = StockTransaction::selectRaw('COALESCE(SUM(CASE WHEN type = "Masuk" THEN quantity ELSE -quantity END), 0) as total_stock')
+        $availableStock = StockTransaction::selectRaw("COALESCE(SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END), 0) as total_stock")
             ->value('total_stock') ?? 0;
 
         return view('main.dashboard.index', compact(
@@ -246,13 +246,13 @@ class ProductsController extends Controller
         
         $products = Product::with(['category'])
             ->where(function($query) use ($search) {
-                $query->where('name', 'like', "%{$search}%")
-                      ->orWhere('sku', 'like', "%{$search}%")
-                      ->orWhere('description', 'like', "%{$search}%")
-                      ->orWhere('specification', 'like', "%{$search}%");
+                $query->where('name', 'ilike', "%{$search}%")
+                      ->orWhere('sku', 'ilike', "%{$search}%")
+                      ->orWhere('description', 'ilike', "%{$search}%")
+                      ->orWhere('specification', 'ilike', "%{$search}%");
             })
             ->whereHas('stockTransactions', function($query) {
-                $query->selectRaw('product_id, COALESCE(SUM(CASE WHEN type = "Masuk" THEN quantity ELSE -quantity END), 0) as stock')
+                $query->selectRaw("product_id, COALESCE(SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END), 0) as stock")
                       ->groupBy('product_id')
                       ->havingRaw('stock > 0');
             })
@@ -261,7 +261,7 @@ class ProductsController extends Controller
         // Hitung stok untuk setiap produk
         foreach ($products as $product) {
             $product->current_stock = StockTransaction::where('product_id', $product->id)
-                ->selectRaw('COALESCE(SUM(CASE WHEN type = "Masuk" THEN quantity ELSE -quantity END), 0) as stock')
+                ->selectRaw("COALESCE(SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END), 0) as stock")
                 ->value('stock') ?? 0;
         }
 
@@ -276,7 +276,7 @@ class ProductsController extends Controller
         $products = Product::with(['category'])
             ->where('category_id', $category->id)
             ->whereHas('stockTransactions', function($query) {
-                $query->selectRaw('product_id, COALESCE(SUM(CASE WHEN type = "Masuk" THEN quantity ELSE -quantity END), 0) as stock')
+                $query->selectRaw("product_id, COALESCE(SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END), 0) as stock")
                       ->groupBy('product_id')
                       ->havingRaw('stock > 0');
             })
@@ -285,7 +285,7 @@ class ProductsController extends Controller
         // Hitung stok untuk setiap produk
         foreach ($products as $product) {
             $product->current_stock = StockTransaction::where('product_id', $product->id)
-                ->selectRaw('COALESCE(SUM(CASE WHEN type = "Masuk" THEN quantity ELSE -quantity END), 0) as stock')
+                ->selectRaw("COALESCE(SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END), 0) as stock")
                 ->value('stock') ?? 0;
         }
 
@@ -302,7 +302,7 @@ class ProductsController extends Controller
             ->where('discount_price', '>', 0)
             ->whereColumn('discount_price', '<', 'original_price')
             ->whereHas('stockTransactions', function($query) {
-                $query->selectRaw('product_id, COALESCE(SUM(CASE WHEN type = "Masuk" THEN quantity ELSE -quantity END), 0) as stock')
+                $query->selectRaw("product_id, COALESCE(SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END), 0) as stock")
                       ->groupBy('product_id')
                       ->havingRaw('stock > 0');
             })
@@ -311,7 +311,7 @@ class ProductsController extends Controller
         // Hitung stok untuk setiap produk
         foreach ($products as $product) {
             $product->current_stock = StockTransaction::where('product_id', $product->id)
-                ->selectRaw('COALESCE(SUM(CASE WHEN type = "Masuk" THEN quantity ELSE -quantity END), 0) as stock')
+                ->selectRaw("COALESCE(SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END), 0) as stock")
                 ->value('stock') ?? 0;
         }
 
@@ -325,7 +325,7 @@ class ProductsController extends Controller
     {
         $products = Product::with(['category'])
             ->whereHas('stockTransactions', function($query) {
-                $query->selectRaw('product_id, COALESCE(SUM(CASE WHEN type = "Masuk" THEN quantity ELSE -quantity END), 0) as stock')
+                $query->selectRaw("product_id, COALESCE(SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END), 0) as stock")
                       ->groupBy('product_id')
                       ->havingRaw('stock <= 0');
             })
@@ -334,7 +334,7 @@ class ProductsController extends Controller
         // Hitung stok untuk setiap produk
         foreach ($products as $product) {
             $product->current_stock = StockTransaction::where('product_id', $product->id)
-                ->selectRaw('COALESCE(SUM(CASE WHEN type = "Masuk" THEN quantity ELSE -quantity END), 0) as stock')
+                ->selectRaw("COALESCE(SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END), 0) as stock")
                 ->value('stock') ?? 0;
         }
 
@@ -348,7 +348,7 @@ class ProductsController extends Controller
     {
         $products = Product::with(['category'])
             ->select('products.*')
-            ->addSelect(DB::raw('COALESCE(SUM(CASE WHEN stock_transactions.type = "Masuk" THEN stock_transactions.quantity ELSE -stock_transactions.quantity END), 0) as current_stock'))
+            ->addSelect(DB::raw("COALESCE(SUM(CASE WHEN stock_transactions.type = 'Masuk' THEN stock_transactions.quantity ELSE -stock_transactions.quantity END), 0) as current_stock"))
             ->leftJoin('stock_transactions', 'products.id', '=', 'stock_transactions.product_id')
             ->groupBy('products.id')
             ->having('current_stock', '>', 0)
@@ -366,7 +366,7 @@ class ProductsController extends Controller
     private function calculateProductStock($productId)
     {
         return StockTransaction::where('product_id', $productId)
-            ->selectRaw('COALESCE(SUM(CASE WHEN type = "Masuk" THEN quantity ELSE -quantity END), 0) as stock')
+            ->selectRaw("COALESCE(SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END), 0) as stock")
             ->value('stock') ?? 0;
     }
 

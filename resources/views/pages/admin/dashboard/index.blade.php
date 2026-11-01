@@ -92,7 +92,7 @@
                 <div class="space-y-4">
                     @forelse ($recentUsers as $user)
                     <div class="flex items-center space-x-4">
-                        <img class="object-cover w-10 h-10 rounded-full" src="{{ $user->profile_photo_path ? asset('storage/' . $user->profile_photo_path) : 'https://ui-avatars.com/api/?name='.urlencode($user->name).'&background=random' }}" alt="{{ $user->name }}">
+                        <img class="object-cover w-10 h-10 rounded-full" src="{{ $user->profile_photo_path ? storage_public_url($user->profile_photo_path) : 'https://ui-avatars.com/api/?name='.urlencode($user->name).'&background=random' }}" alt="{{ $user->name }}">
                         <div class="flex-1 min-w-0">
                             <p class="text-sm font-medium text-gray-900 truncate dark:text-white">{{ $user->name }}</p>
                             <p class="text-xs text-gray-500 dark:text-gray-400">{{ $user->role }}</p>

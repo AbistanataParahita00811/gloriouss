@@ -19,7 +19,7 @@ return new class extends Migration
             }
             
             if (!Schema::hasColumn('users', 'status')) {
-                $table->enum('status', ['active', 'inactive'])->default('active')->after('role');
+                $table->string('status', 16)->default('active')->after('role');
             }
             
             // Ubah phone dari unique menjadi nullable jika perlu

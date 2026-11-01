@@ -44,11 +44,7 @@
                             $imagePath = $product->image;
                             $imageUrl  = null;
                             if ($imagePath) {
-                                if (Storage::disk('public')->exists($imagePath)) {
-                                    $imageUrl = asset('storage/' . $imagePath);
-                                } elseif (Str::startsWith($imagePath, ['http://', 'https://'])) {
-                                    $imageUrl = $imagePath;
-                                }
+                                $imageUrl = storage_public_url($imagePath);
                             }
                         @endphp
 
@@ -412,7 +408,7 @@
                                     {{-- User Avatar --}}
                                     <div class="flex-shrink-0">
                                         @if($review->user && $review->user->profile_photo_path)
-                                            <img src="{{ asset('storage/' . $review->user->profile_photo_path) }}" 
+                                            <img src="{{ storage_public_url($review->user->profile_photo_path) }}" 
                                                  alt="{{ $review->user->name }}"
                                                  class="w-12 h-12 rounded-full object-cover border-2 border-gray-700">
                                         @else
@@ -447,7 +443,7 @@
                                             <div class="flex flex-wrap gap-2 mt-3">
                                                 @foreach($review->images as $imgPath)
                                                     @php
-                                                        $imgUrl = asset('storage/' . $imgPath);
+                                                        $imgUrl = storage_public_url($imgPath);
                                                     @endphp
                                                     <img src="{{ $imgUrl }}" 
                                                          alt="Ulasan" 
@@ -486,11 +482,7 @@
                         $relatedImagePath         = $related->image;
                         $relatedImageUrl          = null;
                         if ($relatedImagePath) {
-                            if (Storage::disk('public')->exists($relatedImagePath)) {
-                                $relatedImageUrl = asset('storage/' . $relatedImagePath);
-                            } elseif (Str::startsWith($relatedImagePath, ['http://', 'https://'])) {
-                                $relatedImageUrl = $relatedImagePath;
-                            }
+                            $relatedImageUrl = storage_public_url($relatedImagePath);
                         }
                     @endphp
 
@@ -1004,13 +996,13 @@
                             ).join('');
 
                             const avatar = review.user && review.user.profile_photo_path
-                                ? `<img src="{{ asset('storage/') }}/${review.user.profile_photo_path}" alt="${review.user.name}" class="w-12 h-12 rounded-full object-cover border-2 border-gray-700">`
+                                ? `<img src="{{ storage_public_base_url() }}/${review.user.profile_photo_path}" alt="${review.user.name}" class="w-12 h-12 rounded-full object-cover border-2 border-gray-700">`
                                 : `<div class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center border-2 border-gray-700"><i class="fas fa-user text-primary text-lg"></i></div>`;
 
                             const imagesHtml = review.images && review.images.length > 0
                                 ? `<div class="flex flex-wrap gap-2 mt-3">
                                     ${review.images.map(img => {
-                                        const url = '{{ asset("storage") }}/' + img;
+                                        const url = '{{ storage_public_base_url() }}/' + img;
                                         return `<img src="${url}" alt="Ulasan" class="w-20 h-20 object-cover rounded-lg border border-gray-600 cursor-pointer hover:opacity-90 transition-opacity" onclick="openImageModal('${url}')">`;
                                     }).join('')}
                                    </div>`

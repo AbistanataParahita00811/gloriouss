@@ -89,8 +89,8 @@ class ManagerDashboardController extends Controller
         if ($request->has('search') && $request->filled('search')) {
             $search = $request->get('search');
             $query->where(function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('sku', 'like', "%{$search}%");
+                $q->where('name', 'ilike', "%{$search}%")
+                  ->orWhere('sku', 'ilike', "%{$search}%");
             });
         }
 
@@ -260,7 +260,7 @@ class ManagerDashboardController extends Controller
 
         if ($request->has('search') && $request->filled('search')) {
             $search = $request->get('search');
-            $query->where('name', 'like', "%{$search}%")->orWhere('email', 'like', "%{$search}%");
+            $query->where('name', 'ilike', "%{$search}%")->orWhere('email', 'ilike', "%{$search}%");
         }
 
         $suppliers = $query->latest()->paginate(15);

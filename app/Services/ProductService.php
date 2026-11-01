@@ -25,7 +25,7 @@ public function getAll(Request $request = null)
         $query = Product::query();
         
         if ($request->has('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+            $query->where('name', 'ilike', '%' . $request->search . '%');
         }
         
         if ($request->has('category')) {
@@ -109,8 +109,8 @@ public function getAll(Request $request = null)
 
     public function search($keyword)
     {
-        return Product::where('name', 'like', "%{$keyword}%")
-            ->orWhere('description', 'like', "%{$keyword}%")
+        return Product::where('name', 'ilike', "%{$keyword}%")
+            ->orWhere('description', 'ilike', "%{$keyword}%")
             ->get();
     }
 

@@ -345,7 +345,7 @@
                 <div class="p-6">
                     @if($product->image)
                         <div class="overflow-hidden rounded-lg">
-                            <img src="{{ asset('storage/' . $product->image) }}"
+                            <img src="{{ storage_public_url($product->image) }}"
                                  alt="{{ $product->name }}"
                                  class="object-cover w-full h-48 mx-auto">
                         </div>

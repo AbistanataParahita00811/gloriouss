@@ -239,7 +239,7 @@ class WishlistController extends Controller
                 ->filter();
             foreach ($wishlistItems as $product) {
                 $product->current_stock = StockTransaction::where('product_id', $product->id)
-                    ->selectRaw('COALESCE(SUM(CASE WHEN type = "Masuk" THEN quantity ELSE -quantity END), 0) as stock')
+                    ->selectRaw("COALESCE(SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END), 0) as stock")
                     ->value('stock') ?? 0;
             }
         } else {
@@ -250,10 +250,13 @@ class WishlistController extends Controller
                 return collect();
             }
             
+            $safeIds = array_map('intval', $wishlistIds);
+            $orderCases = collect($safeIds)
+                ->map(fn ($id, $index) => "WHEN {$id} THEN {$index}")
+                ->implode(' ');
             $wishlistItems = Product::with('category')
-                ->whereIn('id', $wishlistIds)
-                // Hapus kondisi where('is_active', true) jika kolom tidak ada
-                ->orderByRaw("FIELD(id, " . implode(',', $wishlistIds) . ")")
+                ->whereIn('id', $safeIds)
+                ->orderByRaw($orderCases !== '' ? "CASE id {$orderCases} END" : 'id')
                 ->get();
         }
         

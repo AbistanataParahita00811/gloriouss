@@ -13,7 +13,7 @@ return new class extends Migration
                 $table->id();
                 $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
                 $table->string('order_number')->unique()->nullable();
-                $table->enum('status', ['pending', 'confirmed', 'processed', 'cancelled'])->default('pending');
+                $table->string('status', 24)->default('pending');
                 $table->decimal('total', 14, 2)->default(0);
                 $table->string('customer_name')->nullable();
                 $table->string('customer_phone')->nullable();

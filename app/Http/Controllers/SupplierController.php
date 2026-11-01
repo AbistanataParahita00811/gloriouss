@@ -20,10 +20,10 @@ class SupplierController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('contact_person', 'like', "%{$search}%")
-                  ->orWhere('phone', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                $q->where('name', 'ilike', "%{$search}%")
+                  ->orWhere('contact_person', 'ilike', "%{$search}%")
+                  ->orWhere('phone', 'ilike', "%{$search}%")
+                  ->orWhere('email', 'ilike', "%{$search}%");
             });
         }
 
@@ -82,7 +82,7 @@ class SupplierController extends Controller
         // Calculate current stock for each product
         $supplier->products->each(function($product) {
             $product->current_stock = $product->stockTransactions()
-                ->selectRaw('SUM(CASE WHEN type = "Masuk" THEN quantity ELSE -quantity END) as stock')
+                ->selectRaw("SUM(CASE WHEN type = 'Masuk' THEN quantity ELSE -quantity END) as stock")
                 ->value('stock') ?? 0;
         });
 

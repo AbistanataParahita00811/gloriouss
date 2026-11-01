@@ -15,6 +15,11 @@ $app = new Illuminate\Foundation\Application(
     $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
 );
 
+$storagePath = $_ENV['APP_STORAGE_PATH'] ?? getenv('APP_STORAGE_PATH');
+if (! empty($storagePath)) {
+    $app->useStoragePath($storagePath);
+}
+
 /*
 |--------------------------------------------------------------------------
 | Bind Important Interfaces

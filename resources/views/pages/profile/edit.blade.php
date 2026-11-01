@@ -47,7 +47,7 @@
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Foto Profil</label>
                                 <div class="mt-1 flex items-center space-x-4">
                                     <img id="photo-preview" class="h-20 w-20 rounded-full object-cover" 
-                                         src="{{ $user->profile_photo_path ? asset('storage/' . $user->profile_photo_path) : 'https://ui-avatars.com/api/?name='.urlencode($user->name).'&background=3b82f6&color=fff' }}" 
+                                         src="{{ $user->profile_photo_path ? storage_public_url($user->profile_photo_path) : 'https://ui-avatars.com/api/?name='.urlencode($user->name).'&background=3b82f6&color=fff' }}" 
                                          alt="{{ $user->name }}">
                                     <label for="photo" class="cursor-pointer px-4 py-2 border border-gray-300 dark:border-slate-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600">
                                         <span>Ganti Foto</span>

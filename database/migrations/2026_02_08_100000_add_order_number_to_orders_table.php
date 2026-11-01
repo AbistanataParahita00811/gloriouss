@@ -24,6 +24,10 @@ return new class extends Migration
             \Illuminate\Support\Facades\DB::statement(
                 "UPDATE orders SET order_number = CONCAT('GC-', id, '-', DATE_FORMAT(created_at, '%Y%m%d')) WHERE order_number IS NULL OR order_number = ''"
             );
+        } elseif ($driver === 'pgsql') {
+            \Illuminate\Support\Facades\DB::statement(
+                "UPDATE orders SET order_number = 'GC-' || id::text || '-' || to_char(created_at, 'YYYYMMDD') WHERE order_number IS NULL OR order_number = ''"
+            );
         }
     }
 

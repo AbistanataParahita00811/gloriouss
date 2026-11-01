@@ -55,7 +55,7 @@
                         <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white">
                             <div class="flex items-center">
                                 @if($product->image)
-                                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="w-10 h-10 rounded-full object-cover mr-3">
+                                    <img src="{{ storage_public_url($product->image) }}" alt="{{ $product->name }}" class="w-10 h-10 rounded-full object-cover mr-3">
                                 @else
                                     <div class="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center mr-3">
                                         <i class="fas fa-box text-gray-400"></i>

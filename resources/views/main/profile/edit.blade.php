@@ -20,8 +20,8 @@
                 {{-- Profile Header --}}
                 <div class="flex items-center gap-5 mb-10 p-6 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10">
                     {{-- Avatar — logic tidak diubah --}}
-                    @if($user->profile_photo_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($user->profile_photo_path))
-                        <img src="{{ asset('storage/' . $user->profile_photo_path) }}"
+                    @if($user->profile_photo_path)
+                        <img src="{{ storage_public_url($user->profile_photo_path) }}"
                              alt=""
                              class="w-16 h-16 rounded-full object-cover border-2 border-primary/30 flex-shrink-0">
                     @else
@@ -116,9 +116,9 @@
                                 <div>
                                     <label class="block text-gray-400 text-sm mb-2 font-medium">Foto Profil</label>
                                     {{-- Preview — logic tidak diubah --}}
-                                    @if($user->profile_photo_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($user->profile_photo_path))
+                                    @if($user->profile_photo_path)
                                         <div class="mb-4 flex items-center gap-4">
-                                            <img src="{{ asset('storage/' . $user->profile_photo_path) }}"
+                                            <img src="{{ storage_public_url($user->profile_photo_path) }}"
                                                  alt="Foto profil"
                                                  class="w-20 h-20 rounded-full object-cover border-2 border-white/10">
                                             <p class="text-gray-500 text-xs">Foto saat ini</p>

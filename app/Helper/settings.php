@@ -2,35 +2,42 @@
 
 use Illuminate\Support\Facades\Storage;
 
-/**
- * Pastikan fungsi ini hanya didefinisikan sekali.
- * Ini adalah praktik terbaik untuk file helper.
- */
-if (!function_exists('get_favicon_url')) {
-
+if (! function_exists('storage_public_url')) {
     /**
-     * Fungsi untuk mendapatkan URL favicon (logo aplikasi).
-     * Fungsi ini akan secara otomatis memeriksa apakah logo kustom sudah diatur.
-     * Jika tidak ada, fungsi ini akan mengembalikan path ke favicon default.
-     *
-     * @return string URL ke file favicon.
+     * URL publik untuk file di disk `public` (local atau Supabase S3).
      */
-    function get_favicon_url()
+    function storage_public_url(?string $path): ?string
     {
-        // 1. Ambil path logo dari file konfigurasi (yang membaca dari .env)
-        $logoPath = config('app.logo');
-
-        // 2. Periksa apakah path tersebut ada dan file-nya benar-benar ada di storage
-        if ($logoPath && Storage::disk('public')->exists($logoPath)) {
-            // 3. Jika ada, kembalikan URL yang bisa diakses publik.
-            // Tambahkan timestamp '?v=' . time() untuk "cache-busting".
-            // Ini memaksa browser untuk selalu mengunduh versi terbaru dari favicon
-            // setiap kali halaman dimuat, sehingga perubahan langsung terlihat.
-            return asset('storage/' . $logoPath) . '?v=' . time();
+        if (blank($path)) {
+            return null;
         }
 
-        // 4. Jika tidak ada logo kustom, kembalikan path ke favicon.ico default
-        //    yang biasanya ada di folder /public.
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
+        }
+
+        return Storage::disk('public')->url($path);
+    }
+}
+
+if (! function_exists('storage_public_base_url')) {
+    function storage_public_base_url(): string
+    {
+        return rtrim(Storage::disk('public')->url('/'), '/');
+    }
+}
+
+if (! function_exists('get_favicon_url')) {
+    function get_favicon_url()
+    {
+        $logoPath = config('app.logo');
+
+        if ($logoPath) {
+            $url = storage_public_url($logoPath);
+
+            return $url ? $url.'?v='.time() : asset('favicon.ico');
+        }
+
         return asset('favicon.ico');
     }
 }

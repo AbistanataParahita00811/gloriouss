@@ -95,8 +95,8 @@ class AdminDashboardController extends Controller
     if ($request->filled('search')) {
         $search = $request->search;
         $query->where(function($q) use ($search) {
-            $q->where('name', 'like', "%{$search}%")
-              ->orWhere('email', 'like', "%{$search}%");
+            $q->where('name', 'ilike', "%{$search}%")
+              ->orWhere('email', 'ilike', "%{$search}%");
         });
     }
 
@@ -162,11 +162,11 @@ class AdminDashboardController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($qry) use ($search) {
-                $qry->where('order_number', 'like', "%{$search}%")
-                    ->orWhere('customer_name', 'like', "%{$search}%")
-                    ->orWhere('customer_phone', 'like', "%{$search}%")
+                $qry->where('order_number', 'ilike', "%{$search}%")
+                    ->orWhere('customer_name', 'ilike', "%{$search}%")
+                    ->orWhere('customer_phone', 'ilike', "%{$search}%")
                     ->orWhereHas('user', function ($u) use ($search) {
-                        $u->where('name', 'like', "%{$search}%")->orWhere('username', 'like', "%{$search}%");
+                        $u->where('name', 'ilike', "%{$search}%")->orWhere('username', 'ilike', "%{$search}%");
                     });
             });
         }
@@ -300,9 +300,9 @@ public function userDestroy(User $user)
     if ($request->filled('search')) {
         $search = $request->input('search');
         $query->where(function($q) use ($search) {
-            $q->where('name', 'like', "%{$search}%")
-              ->orWhere('sku', 'like', "%{$search}%")
-              ->orWhere('description', 'like', "%{$search}%");
+            $q->where('name', 'ilike', "%{$search}%")
+              ->orWhere('sku', 'ilike', "%{$search}%")
+              ->orWhere('description', 'ilike', "%{$search}%");
         });
     }
 
@@ -666,7 +666,7 @@ public function userDestroy(User $user)
 
     if ($request->filled('search')) {
         $search = $request->input('search');
-        $query->where('name', 'like', "%{$search}%");
+        $query->where('name', 'ilike', "%{$search}%");
     }
 
     $categories = $query->paginate(10);
@@ -773,10 +773,10 @@ public function userDestroy(User $user)
     if ($request->filled('search')) {
         $search = $request->search;
         $query->where(function($q) use ($search) {
-            $q->where('name', 'like', "%{$search}%")
-              ->orWhere('contact_person', 'like', "%{$search}%")
-              ->orWhere('phone', 'like', "%{$search}%")
-              ->orWhere('email', 'like', "%{$search}%");
+            $q->where('name', 'ilike', "%{$search}%")
+              ->orWhere('contact_person', 'ilike', "%{$search}%")
+              ->orWhere('phone', 'ilike', "%{$search}%")
+              ->orWhere('email', 'ilike', "%{$search}%");
         });
     }
 
@@ -887,8 +887,8 @@ public function userDestroy(User $user)
 
         if ($request->has('search')) {
             $search = $request->search;
-            $query->where('name', 'like', "%{$search}%")
-                ->orWhere('value', 'like', "%{$search}%");
+            $query->where('name', 'ilike', "%{$search}%")
+                ->orWhere('value', 'ilike', "%{$search}%");
         }
 
         $attributes = $query->paginate(15);
@@ -903,7 +903,7 @@ public function userDestroy(User $user)
 
         if ($request->has('search')) {
             $search = $request->search;
-            $query->whereHas('product', fn($q) => $q->where('name', 'like', "%{$search}%"));
+            $query->whereHas('product', fn($q) => $q->where('name', 'ilike', "%{$search}%"));
         }
 
         $transactions = $query->paginate(20);

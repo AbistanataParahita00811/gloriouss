@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('whatsapp')->nullable();
             $table->text('address')->nullable();
             $table->string('password');
-            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->string('status', 16)->default('active');
             $table->rememberToken();
             $table->timestamps();
         });
