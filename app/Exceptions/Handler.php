@@ -42,7 +42,8 @@ class Handler extends ExceptionHandler
     public function register(): void
     {
         $this->reportable(function (Throwable $e) {
-            //
+            // One short line so Vercel logs are not truncated from the left.
+            error_log('LARAVEL_ERROR: '.$e::class.': '.$e->getMessage().' @ '.$e->getFile().':'.$e->getLine());
         });
     }
 }
