@@ -16,14 +16,22 @@ if (! function_exists('storage_public_url')) {
             return $path;
         }
 
-        return Storage::disk('public')->url($path);
+        try {
+            return Storage::disk('public')->url($path);
+        } catch (Throwable $e) {
+            return rtrim((string) config('app.url'), '/').'/storage/'.ltrim($path, '/');
+        }
     }
 }
 
 if (! function_exists('storage_public_base_url')) {
     function storage_public_base_url(): string
     {
-        return rtrim(Storage::disk('public')->url('/'), '/');
+        try {
+            return rtrim(Storage::disk('public')->url('/'), '/');
+        } catch (Throwable $e) {
+            return rtrim((string) config('app.url'), '/').'/storage';
+        }
     }
 }
 
